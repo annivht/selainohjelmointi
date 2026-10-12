@@ -1,6 +1,6 @@
+
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-
 
 // näyttää yhden henkilön tiedot ja delete-napin
 const Person = ({ person, deletePerson }) => {
@@ -11,7 +11,6 @@ const Person = ({ person, deletePerson }) => {
     </p>
   )
 }
-
 
 // näyttää kaikki henkilöt
 const Persons = ({ persons, deletePerson }) => {
@@ -27,7 +26,6 @@ const Persons = ({ persons, deletePerson }) => {
     </div>
   )
 }
-
 
 // lomake uuden henkilön lisäämiseen
 const PersonForm = ({
@@ -62,7 +60,6 @@ const PersonForm = ({
   )
 }
 
-
 const App = () => {
   // tilat henkilöille, nimelle ja numerolle
   const [persons, setPersons] = useState([])
@@ -88,63 +85,27 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  // lisää uuden henkilön tai päivittää olemassa olevan numeron
+  // lisää uuden henkilön
   const addPerson = (event) => {
     event.preventDefault()
 
-    // etsitään löytyykö henkilö jo
-    // trim poistaa ylimääräiset välilyönnit
-    // toLowerCase poistaa isojen ja pienten kirjainten merkityksen
+    // tarkistetaan löytyykö nimi jo
     const existingPerson = persons.find(
-      (person) =>
-        person.name.toLowerCase().trim() ===
+      person => person.name.toLowerCase().trim() ===
         newName.toLowerCase().trim()
     )
 
-    // jos henkilö löytyy jo
     if (existingPerson) {
-      const confirmUpdate = window.confirm(
-        `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
-      )
-
-      // jos käyttäjä painaa Cancel
-      if (!confirmUpdate) {
-        return
-      }
-
-      // tehdään henkilöstä kopio ja vaihdetaan numero
-      const updatedPerson = {
-        ...existingPerson,
-        number: newNumber
-      }
-
-      // päivitetään henkilö palvelimelle PUT-pyynnöllä
-      personService
-        .update(existingPerson.id, updatedPerson)
-        .then(response => {
-          // korvataan vanha henkilö päivitetyllä henkilöllä
-          setPersons(
-            persons.map((person) =>
-              person.id === existingPerson.id
-                ? response.data
-                : person
-            )
-          )
-
-          setNewName('')
-          setNewNumber('')
-        })
-
+      alert(`${newName} is already added to phonebook`)
       return
     }
 
-    // jos henkilöä ei löydy, luodaan uusi henkilö
     const personObject = {
       name: newName.trim(),
       number: newNumber
     }
 
-    // lähetetään uusi henkilö palvelimelle POST-pyynnöllä
+    // lisätään henkilö palvelimelle
     personService
       .create(personObject)
       .then(response => {
@@ -152,22 +113,20 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      .catch(error => {
+        alert(error.response?.data?.error || 'Adding person failed')
+      })
   }
 
   // poistaa henkilön
   const deletePerson = (id) => {
-    // etsitään poistettava henkilö id:n perusteella
-    const person = persons.find((person) => person.id === id)
+    const person = persons.find(person => person.id === id)
 
-    // kysytään käyttäjältä varmistus
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
         .remove(id)
         .then(() => {
-          // poistetaan henkilö myös näkymästä
-          setPersons(
-            persons.filter((person) => person.id !== id)
-          )
+          setPersons(persons.filter(person => person.id !== id))
         })
     }
   }

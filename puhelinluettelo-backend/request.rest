@@ -1,0 +1,44 @@
+
+GET http://localhost:3001/api/persons
+
+###
+
+GET http://localhost:3001/info
+
+###
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Matti Meikäläinen",
+  "number": "040-1234567"
+}
+
+###
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Arto Hellas",
+  "number": "040-111111"
+}
+
+###
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Liisa"
+}
+
+###
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "number": "050-123456"
+}

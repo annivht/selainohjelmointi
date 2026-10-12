@@ -1,6 +1,7 @@
+
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = 'http://localhost:3001/api/persons'
 
 // hakee kaikki henkilöt palvelimelta
 const getAll = () => {
@@ -17,9 +18,4 @@ const remove = (id) => {
   return axios.delete(`${baseUrl}/${id}`)
 }
 
-// päivittää olemassa olevan henkilön tiedot
-const update = (id, newObject) => {
-  return axios.put(`${baseUrl}/${id}`, newObject)
-}
-
-export default { getAll, create, remove, update }
+export default { getAll, create, remove }
